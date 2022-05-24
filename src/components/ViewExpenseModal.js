@@ -1,33 +1,31 @@
-import { useRef } from "react";
 import { Button, Modal, Stack } from "react-bootstrap";
-import { useBudget, UNCATEGORIXED_BUDGET_ID } from "../contexts/BudgetContext";
+import { useBudget, UNCATEGORIZED_BUDGET_ID } from "../contexts/BudgetContext";
+import ExpenseCard from "./ExpenseCard";
 
-const ViewExpenseModal = ({ budgetId, handleClose }) => {
-  const { getExpenses, budgets, deleteBudget, deleteExpenses } = useBudget();
+const ViewExpenseModal = ({ show, budgetId, handleClose }) => {
+  const { getExpenses, budgets, deleteBudget } = useBudget();
 
-  const renderExpenses = getExpenses(budgetId).map((b, i) => (
-    <option key={i} value={b.id}>
-      {b.name}
-    </option>
+  const renderExpenses = getExpenses(budgetId).map((e, i) => (
+    <ExpenseCard key={i} {...e} />
   ));
 
   const budget =
-    budgetId === UNCATEGORIXED_BUDGET_ID
-      ? { name: "Uncategorized", id: UNCATEGORIXED_BUDGET_ID }
+    budgetId === UNCATEGORIZED_BUDGET_ID
+      ? { name: "Uncategorized", id: UNCATEGORIZED_BUDGET_ID }
       : budgets.find((b) => b.id === budgetId);
 
   const onDeleteBudget = () => {
-    deleteBudget(budget);
+    deleteBudget(budgetId);
     handleClose();
   };
 
   return (
-    <Modal show={budgetId} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>
           <Stack direction="horizontal" gap="2" className="mt-4">
             <div>Expenses - {budget?.name}</div>
-            {budgetId !== UNCATEGORIXED_BUDGET_ID && (
+            {budgetId !== UNCATEGORIZED_BUDGET_ID && (
               <Button onClick={onDeleteBudget} variant="outline-danger">
                 Delete
               </Button>
@@ -36,12 +34,9 @@ const ViewExpenseModal = ({ budgetId, handleClose }) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {renderExpenses()}
-        <div className="d-flex justify-content-end">
-          <Button variant="primary" type="submit">
-            Add
-          </Button>
-        </div>
+        <Stack direction="vertical" gap="3">
+          {renderExpenses}
+        </Stack>
       </Modal.Body>
     </Modal>
   );

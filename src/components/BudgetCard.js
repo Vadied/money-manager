@@ -2,9 +2,16 @@ import { Card, ProgressBar, Stack, Button } from "react-bootstrap";
 import { currencyFormatter } from "../utils";
 import { useBudget } from "../contexts/BudgetContext";
 
-const BudgetCard = ({ id, name, max, gray, onAddExpenseClick }) => {
+const BudgetCard = ({
+  id,
+  name,
+  max,
+  gray,
+  onAddExpenseClick,
+  viewExpenses,
+}) => {
   const { getExpenses } = useBudget();
-  const expenses = getExpenses({ id });
+  const expenses = getExpenses(id);
 
   const amount = expenses.reduce((sum, e) => sum + e.amount, 0);
 
@@ -50,7 +57,9 @@ const BudgetCard = ({ id, name, max, gray, onAddExpenseClick }) => {
           >
             Add Expense
           </Button>
-          <Button variant="outline-secondary">View Expenses</Button>
+          <Button variant="outline-secondary" onClick={() => viewExpenses(id)}>
+            View Expenses
+          </Button>
         </Stack>
       </Card.Body>
     </Card>
