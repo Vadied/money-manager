@@ -13,6 +13,7 @@ const AddBudgetModal = ({ show, handleClose }) => {
       name: nameRef.current.value,
       max: parseFloat(maxRef.current.value),
     });
+    handleClose();
   };
   return (
     <Modal show={show} onHide={handleClose}>
@@ -26,7 +27,7 @@ const AddBudgetModal = ({ show, handleClose }) => {
             <Form.Control ref={nameRef} type="text" required></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3" controlId="max">
-            <Form.Label>MAximum Spending</Form.Label>
+            <Form.Label>Maximum Spending</Form.Label>
             <Form.Control
               ref={maxRef}
               type="number"
@@ -36,7 +37,9 @@ const AddBudgetModal = ({ show, handleClose }) => {
             ></Form.Control>
           </Form.Group>
           <div className="d-flex justify-content-end">
-            <Button variant="primary">Add</Button>
+            <Button variant="primary" type="submit">
+              Add
+            </Button>
           </div>
         </Modal.Body>
       </Form>

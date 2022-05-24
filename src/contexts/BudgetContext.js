@@ -1,41 +1,34 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { v4 as uuidV4 } from "uuid";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 const BudgetContext = React.createContext();
 
-export function useBudget() {
+export const UNCATEGORIXED_BUDGET_ID = "Uncategorized";
+
+export const useBudget = () => {
   return useContext(BudgetContext);
-}
+};
 
 export const BudgetProvider = ({ children }) => {
   const [budgets, setBudgets] = useLocalStorage("budgets", []);
   const [expenses, setExpenses] = useLocalStorage("expenses", []);
 
   // Budget
-  function addBudget(newBudget) {
+  const addBudget = (newBudget) =>
     setBudgets((previous) => {
       if (previous.find((p) => p.name === newBudget.name)) return previous;
       return [...previous, { ...newBudget, id: uuidV4() }];
     });
-  }
-
-  function deleteBudget({ id }) {
+  const deleteBudget = ({ id }) =>
     setBudgets((previous) => previous.filter((p) => p.id !== id));
-  }
 
   // Expenses
-  function addBudgetExpense(newExpense) {
+  const addExpense = (newExpense) =>
     setExpenses((previous) => [...previous, { ...newExpense, id: uuidV4() }]);
-  }
-
-  function getBudgetExpenses(budgetId) {
-    return expenses.filter((e) => e.budgetId === budgetId);
-  }
-
-  function deleteBudgetExpenses({ id }) {
-    setBudgets((previous) => previous.filter((p) => p.id !== id));
-  }
+  const getExpenses = ({ id }) => expenses.filter((e) => e.budgetId === id);
+  const deleteExpenses = ({ id }) =>
+    setExpenses((previous) => previous.filter((p) => p.id !== id));
 
   return (
     <BudgetContext.Provider
@@ -44,12 +37,12 @@ export const BudgetProvider = ({ children }) => {
         expenses,
         addBudget,
         deleteBudget,
-        addBudgetExpense,
-        getBudgetExpenses,
-        deleteBudgetExpenses,
+        addExpense,
+        getExpenses,
+        deleteExpenses,
       }}
     >
-      {children}{" "}
+      {children}
     </BudgetContext.Provider>
   );
 };
